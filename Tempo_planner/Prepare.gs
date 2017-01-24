@@ -1,21 +1,12 @@
-function prepareData() {
-  this.getListOfLinesInScope()
-}
-
 function getListOfLinesInScope() {
 
   var allValues = Utils.getValuesBySheetName('Tempo Extract'),
     ss = SpreadsheetApp.getActiveSpreadsheet(),
     startDateScope = ss.getRange('Rates by Team!H2').getValue(),
-    endDateScope = ss.getRange('Rates by Team!I2').getValue()
-
-  //Get Months to Forecast
-  var ss = SpreadsheetApp.getActiveSpreadsheet(),
-    aProjects = Utils.getProjectsArray(),
-    aCacheData = []
+    endDateScope = ss.getRange('Rates by Team!I2').getValue(),
+    aProjects = Utils.getProjectsArray()
 
   //Prepare Data and Clean Tempo Extract
-  var ss = SpreadsheetApp.getActive()
   var resExtract = ss.getSheetByName('Data')
   if(resExtract){
     ss.deleteSheet(resExtract)
@@ -30,46 +21,15 @@ function getListOfLinesInScope() {
     if ( Utils.isDateInScope(startDate, startDateScope, endDateScope) || Utils.isDateInScope(endDate, startDateScope, endDateScope)) {
       if (Utils.isProjectExists(allValues[i][4], aProjects)) {
         var rate = Utils.getRate(allValues[i][2], allValues[i][4], allValues[i][8])
-        aCacheData.push([allValues[i][2], allValues[i][0], allValues[i][4], Utils.getProjectByCode(allValues[i][4]), allValues[i][8], allValues[i][9], allValues[i][10], startDate, endDate, Utils.getProfile(allValues[i][2]), Utils.getOrg(allValues[i][2]), rate])
+        resExtract.appendRow([allValues[i][2], allValues[i][0], allValues[i][4], Utils.getProjectByCode(allValues[i][4]), allValues[i][8], allValues[i][9], allValues[i][10], startDate, endDate, Utils.getProfile(allValues[i][2]), Utils.getOrg(allValues[i][2]), rate])
       }
     }
   }
-
-  for (var i = 0; i < aCacheData.length; i++) {
-    resExtract.appendRow([aCacheData[i][0], aCacheData[i][1], aCacheData[i][2], aCacheData[i][3], aCacheData[i][4], aCacheData[i][5], aCacheData[i][6], aCacheData[i][7], aCacheData[i][8], aCacheData[i][9], aCacheData[i][10], aCacheData[i][11]])
-  }
-
-  //resExtract.hideSheet()
-  //this.SplitByMonthlyPeriod()
-
+  resExtract.hideSheet()
 }
 
-
-function cacheData() {
-
-  var allValues = Utils.getValuesBySheetName('Tempo Extract'),
-    ss = SpreadsheetApp.getActiveSpreadsheet(),
-    startDateScope = ss.getRange('Rates by Team!H2').getValue(),
-    endDateScope = ss.getRange('Rates by Team!I2').getValue(),
-    aProjects = Utils.getProjectsArray(),
-    aCacheData = []
-
-
-  for (var i = 1; i < allValues.length; i++) {
-    var startDate = Utils.removeWeekEndFromPeriod(allValues[i][11], 1),
-      endDate = Utils.removeWeekEndFromPeriod(allValues[i][12], -1)
-
-    if ( Utils.isDateInScope(startDate, startDateScope, endDateScope) || Utils.isDateInScope(endDate, startDateScope, endDateScope)) {
-      if (Utils.isProjectExists(allValues[i][4], aProjects)) {
-        var rate = Utils.getRate(allValues[i][2], allValues[i][4], allValues[i][8])
-        aCacheData.push([allValues[i][2], allValues[i][0], allValues[i][4], Utils.getProjectByCode(allValues[i][4]), allValues[i][8], allValues[i][9], allValues[i][10], startDate, endDate, Utils.getProfile(allValues[i][2]), Utils.getOrg(allValues[i][2]), rate])
-      }
-    }
-  }
-}
-
-function SplitByMonthlyPeriod() {
 //Prepare Data2
+function SplitByMonthlyPeriod() {
 
   var ss = SpreadsheetApp.getActiveSpreadsheet(),
     startDateScope = ss.getRange('Rates by Team!H2').getValue(),
@@ -77,15 +37,13 @@ function SplitByMonthlyPeriod() {
     numDaysByMonth = ss.getRange('Rates by Team!G2').getValue(),
     errors = false
 
-  //REmove old Sheets
+  //Remove old Sheets
   var resExtract = ss.getSheetByName('Data 2')
   if(resExtract){
     resExtract.clear()
   } else {
     ss.insertSheet('Data 2', 1)
   }
-
-
 
   var errorData = ss.getSheetByName('Errors')
   if(errorData){
@@ -161,6 +119,5 @@ function SplitByMonthlyPeriod() {
     }
 
   }
-
-  //resExtract.hideSheet()
+  resExtract.hideSheet()
 }
