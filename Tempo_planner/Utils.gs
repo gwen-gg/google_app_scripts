@@ -28,6 +28,13 @@ Utils.getWorkDays = function(firstDate, lastDate) {
   return count
 }
 
+Utils.isWorkDay = function(date) {
+  if (date.getDay() != 0 && date.getDay() != 6) {
+    return true
+  }
+  return false
+}
+
 // remove weekends from extremities
 Utils.removeWeekEndFromPeriod = function(date, direction) {
   var returnDate = new Date(date.getTime())
@@ -78,6 +85,15 @@ Utils.isProjectExists = function(projectKey, aProjects) {
   return false
 }
 
+Utils.isAccountExists = function(accountKey, aAccounts) {
+  for (var i = 0; i < aAccounts.length; i++) {
+    if (aAccounts[i] === accountKey) {
+      return true
+    }
+  }
+  return false
+}
+
 /*Utils.getMonthsInScopeArray = function() {
  var startDate = new Date(SpreadsheetApp.getActiveSpreadsheet().getRange('Rates by Team!K2').getValue()),
  endDate = new Date(SpreadsheetApp.getActiveSpreadsheet().getRange('Rates by Team!L2').getValue()),
@@ -97,6 +113,15 @@ Utils.getProjectsArray = function() {
     aProjects.push(fProjects[i][0])
   }
   return aProjects
+}
+
+Utils.getAccountsArray = function() {
+  var fAccounts = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Accounts').getDataRange().getValues(),
+    aAccounts = []
+  for (var i = 0; i < fAccounts.length; i++) {
+    aAccounts.push(fAccounts[i][0])
+  }
+  return aAccounts
 }
 
 Utils.getLastDayOfMonth = function(date) {
@@ -120,6 +145,16 @@ Utils.getRate = function(username, team, accounting) {
   for (var i = 1; i < rates.length; i++) {
     if (username === rates[i][1] && team === rates[i][2] && accounting === rates[i][3]) {
       return rates[i][4]
+    }
+  }
+  return 'Not defined'
+}
+
+Utils.getRateByAccountActuals = function(username, accountKey) {
+  var rates = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Rates by Account').getDataRange().getValues()
+  for (var i = 1; i < rates.length; i++) {
+    if (username === rates[i][1] && accountKey === rates[i][2]) {
+      return rates[i][3]
     }
   }
   return 'Not defined'
@@ -157,6 +192,17 @@ Utils.getProjectByCode = function(code) {
   for (var i = 1; i < sProjects.length; i++) {
     if (code === sProjects[i][0]) {
       return sProjects[i][1]
+    }
+  }
+  return 'Not defined'
+}
+
+// Get account key name by Tempo billable field
+Utils.getBillableByKey = function(key) {
+  var sAccounts = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Accounts').getDataRange().getValues()
+  for (var i = 1; i < sAccounts.length; i++) {
+    if (key === sAccounts[i][0]) {
+      return sAccounts[i][2]
     }
   }
   return 'Not defined'

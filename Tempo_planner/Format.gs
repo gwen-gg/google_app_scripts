@@ -2,6 +2,13 @@ function Format() {
 
 }
 
+
+Format.convertDate = function(inputFormat) {
+  function pad(s) { return (s < 10) ? '0' + s : s; }
+  var d = new Date(inputFormat);
+  return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+}
+
 Format.getMonthName = function(value){
   var month = {};
   month[0] = "jan";
