@@ -36,6 +36,7 @@ function prepareForecastData() {
     startDateScope = ss.getRange('Rates by Team!H2').getValue(),
     endDateScope = ss.getRange('Rates by Team!I2').getValue(),
     numDaysByMonth = ss.getRange('Rates by Team!G2').getValue(),
+    diffToRealWorkHours = ss.getRange('Rate Card!E7').getValue(),
     errors = false
 
   //Remove old Sheets
@@ -90,7 +91,7 @@ function prepareForecastData() {
           totalPrice = ''
         } else {
           price = Utils.getPriceByRate(rate, accounting)
-          totalPrice =  price * workDays * ratio
+          totalPrice =  price * workDays * ratio * diffToRealWorkHours
         }
 
         // Write to file
@@ -219,13 +220,10 @@ function writeToActualsData() {
   // prepare temporary lines array
   if(aUsers) {
 
-
-
     for (var i = 0; i < aUsers.length; i++) {
 
       var username = aUsers[i],
         profile = cache.get(username)
-
 
       if (profile) {
 
@@ -301,9 +299,9 @@ function writeToActualsData() {
       totalPrice = '',
       price = ''
 
-    Logger.log(aLines[0][2].split('/'))
-
-    Logger.log(Object.prototype.toString.call(aLines[0][2]))
+    //Logger.log(aLines[0][2].split('/'))
+    Logger.log(aLines)
+    //Logger.log(Object.prototype.toString.call(aLines[0][2]))
 
     while(k < aLines.length) {
 
